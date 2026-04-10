@@ -1,0 +1,51 @@
+name: Job Alert — Data Engineering DK & SE
+
+on:
+  schedule:
+    # Runs every 30 minutes, 07:00–21:00 CET (06:00–20:00 UTC)
+    - cron: '0,30 6-20 * * 1-5'   # weekdays only, every 30 min
+    - cron: '0 8,12,16 * * 0,6'   # weekends: 3x per day only
+  workflow_dispatch:               # allows manual trigger from GitHub UI
+
+jobs:
+  run-job-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore seen_jobs cache
+        uses: actions/cache@v4
+        with:
+          path: seen_jobs.json
+          key: seen-jobs-${{ github.run_id }}
+          restore-keys: |
+            seen-jobs-
+
+      - name: Run job alert
+        env:
+          GMAIL_ADDRESS:      ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: python src/job_alert.py
+
+      - name: Save seen_jobs state
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: seen_jobs.json
+          key: seen-jobs-${{ github.run_id }}
