@@ -68,6 +68,17 @@ RSS_FEEDS = [
         "url": "https://job.jobnet.dk/CV/FindWork/Search?SearchString=data+engineer&RegionId=1&County=1",
         "country": "Denmark"
     },
+    # Informatica-specific searches — Denmark
+{
+    "source": "Indeed DK",
+    "url": "https://dk.indeed.com/rss?q=informatica+OR+IICS+OR+IDMC&l=Denmark&sort=date&fromage=7",
+    "country": "Denmark"
+},
+{
+    "source": "Jobindex",
+    "url": "https://www.jobindex.dk/jobsoegning.xml?q=informatica&where=storkbh",
+    "country": "Denmark"
+},
 ]
 
 # Keywords to match in title (case-insensitive)
@@ -82,6 +93,10 @@ TITLE_KEYWORDS = [
     "bi developer",
     "bi engineer",
     "data specialist",
+     "informatica",          # ADD
+    "iics",                 # ADD
+    "informatica cloud",    # ADD
+    "idmc"        
 ]
 
 # Keywords to EXCLUDE (avoid irrelevant hits)
